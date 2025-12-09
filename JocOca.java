@@ -8,16 +8,17 @@ public class JocOca {
     }
 
     Scanner h = new Scanner(System.in);
-
+    String[] noms ;
+    int numPlayers;
     public void principal() {
         System.out.println("EL JOC DE L'OCA \n");
         config();
-        jugar();
+        play();
 
     }
 
     public void config() {
-        int numPlayers;
+        
         do {
             System.out.print("Quants jugadors juguen?: ");
             numPlayers = scTryCatchInt(h);
@@ -28,7 +29,7 @@ public class JocOca {
 
         h.nextLine();
 
-        String[] noms = nomsJugadors(numPlayers, h);
+        noms = nomsJugadors(h);
         definirOrdre(numPlayers, noms);
     }
 
@@ -48,12 +49,12 @@ public class JocOca {
         return entrada;
     }
 
-    public String[] nomsJugadors(int num, Scanner sc) {
-        String[] names = new String[num];
+    public String[] nomsJugadors(Scanner sc) {
+        String[] names = new String[numPlayers];
 
-        for (int c = 0; c < num; c++) {
+        for (int c = 0; c < numPlayers; c++) {
             System.out.print("Com es diu el jugador " + (c + 1) + "?: ");
-            names[c] = scTryCatchString(sc); // utilitzem el Scanner passat com a paràmetre
+            names[c] = scTryCatchString(sc); 
         }
 
         return names;
@@ -84,7 +85,7 @@ public class JocOca {
         System.out.println("\n--- TIRADES PER DEFINIR L'ORDRE ---");
 
         for (int c = 0; c < num; c++) {
-            tirades[c] = (int) (Math.random() * 12) + 1;
+            tirades[c] = tirarDau(c);
             System.out.println("El jugador " + names[c] + " ha tret un " + tirades[c]);
         }
         for (int i = 0; i < num - 1; i++) {
@@ -99,7 +100,7 @@ public class JocOca {
                 }
             }
         }
-        int[] ordre = new int[num];
+        
 
         System.out.println("\nORDRE DE TIRADA:");
         for (int i = 0; i < num; i++) {
@@ -108,6 +109,25 @@ public class JocOca {
 
     }
 
-    public void jugar() {
+    public void play() {
+    int torn= 0;
+    boolean tornActiu = true;
+    boolean end = false;
+    do{
+    while(tornActiu){
+    if (torn >=noms.length){
+        torn = 0;
+    }
+    System.out.println("Torn de: "+ noms[torn]);
+    int dice= 0;
+    int move;
+    move = tirarDau(dice);
+    torn++;
+    }
+    }while(!end);
+    }
+    public int tirarDau(int dice){
+        dice = (int) (Math.random() * 12) + 1;         
+        return dice;
     }
 }
