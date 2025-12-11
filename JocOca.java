@@ -8,8 +8,11 @@ public class JocOca {
     }
 
     Scanner h = new Scanner(System.in);
-    String[] noms ;
+    String[] noms;
     int numPlayers;
+    boolean seguentTorn = true;
+    boolean end = false;
+
     public void principal() {
         System.out.println("EL JOC DE L'OCA \n");
         config();
@@ -18,7 +21,7 @@ public class JocOca {
     }
 
     public void config() {
-        
+
         do {
             System.out.print("Quants jugadors juguen?: ");
             numPlayers = scTryCatchInt(h);
@@ -54,7 +57,7 @@ public class JocOca {
 
         for (int c = 0; c < numPlayers; c++) {
             System.out.print("Com es diu el jugador " + (c + 1) + "?: ");
-            names[c] = scTryCatchString(sc); 
+            names[c] = scTryCatchString(sc);
         }
 
         return names;
@@ -85,7 +88,7 @@ public class JocOca {
         System.out.println("\n--- TIRADES PER DEFINIR L'ORDRE ---");
 
         for (int c = 0; c < num; c++) {
-            tirades[c] = tirarDau(c);
+            tirades[c] = (int) (Math.random() * 12) + 1;
             System.out.println("El jugador " + names[c] + " ha tret un " + tirades[c]);
         }
         for (int i = 0; i < num - 1; i++) {
@@ -100,7 +103,6 @@ public class JocOca {
                 }
             }
         }
-        
 
         System.out.println("\nORDRE DE TIRADA:");
         for (int i = 0; i < num; i++) {
@@ -110,24 +112,99 @@ public class JocOca {
     }
 
     public void play() {
-    int torn= 0;
-    boolean tornActiu = true;
-    boolean end = false;
-    do{
-    while(tornActiu){
-    if (torn >=noms.length){
-        torn = 0;
+        int[] tauler = new int[numPlayers];
+
+        System.out.println("\nCOMENÇA LA PARTIDA");
+        int torn = 0;
+
+        do {
+    seguentTorn = false;
+            while (!seguentTorn) {
+                
+                int ronda =1;
+                if (torn >= noms.length) {
+                    torn = 0;
+                    ronda++;
+                }
+                System.out.println("Torn de: " + noms[torn] + ", està a la casella " + tauler[torn]);
+                int dice = 0;
+                int move;
+                move = tirarDau(dice, tauler, torn);
+                int dice1stRound=0;
+                if (ronda ==1){
+                    dice1stRound = move;
+                    
+                }
+                System.out.println(noms[torn] + " ha tret un " + move);
+                
+                tauler[torn] = tauler[torn] + move;
+                daus3_6_4_5(tauler, torn, dice1stRound);
+                ocaEnOca(tauler, torn);
+                comprovarCasella63(tauler, torn);
+
+                
+            }
+            torn++;
+        } while (!end);
+        System.out.println("Ha acabat el joc");
     }
-    System.out.println("Torn de: "+ noms[torn]);
-    int dice= 0;
-    int move;
-    move = tirarDau(dice);
-    torn++;
-    }
-    }while(!end);
-    }
-    public int tirarDau(int dice){
-        dice = (int) (Math.random() * 12) + 1;         
+
+    public int tirarDau(int dice, int tauler[], int torn) {
+        if (tauler[torn] < 60) {
+            dice = (int) (Math.random() * 12) + 1;
+        } else {
+            dice = (int) (Math.random() * 6) + 1;
+        }
         return dice;
+    }
+
+public void daus3_6_4_5(int tauler[], int torn, int dice ){
+if (dice == 3 ||dice==6 ){
+    tauler[torn]= 26;
+    System.out.println("De dado a dado y tiro porque me ha tocado.");
+    seguentTorn = false;
+}
+if (dice == 4 ||dice==5 ){
+    tauler[torn]= 53;
+    System.out.println("De dado a dado y tiro porque me ha tocado.");
+    seguentTorn = false;
+}
+}
+
+    public void comprovarCasella63(int tauler[], int torn) {
+        if (tauler[torn] < 63) {
+            System.out.println(noms[torn] + " es mou fins la casella: " + tauler[torn] + "\n");
+        } else if (tauler[torn] == 63) {
+            System.out.println(noms[torn] + " es mou fins la casella: " + tauler[torn]);
+            System.out.println("El jugador " + noms[torn] + " ha guanyat");
+            seguentTorn = false;
+            end = true;
+        } else if (tauler[torn] > 63) {
+            int sobrants = 0;
+            while (tauler[torn] > 63) {
+                sobrants++;
+                tauler[torn]--;
+
+            }
+            tauler[torn] = tauler[torn] - sobrants;
+            System.out.println(noms[torn] + " s'ha mogut fins a " + tauler[torn] + "\n");
+        }
+    }
+
+    public void ocaEnOca(int tauler[], int torn) {
+        System.out.println("Es mou fins la casella " + tauler[torn]);
+        int[] oques = { 5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59 };
+
+        for (int i = 0; i < oques.length; i++) {
+            if (tauler[torn] == oques[i]) {
+                if (i + 1 < oques.length) {
+                    tauler[torn] = oques[i + 1];
+                    System.out.println("De oca a oca! " + noms[torn] +
+                            " avança fins la casella " + tauler[torn]);
+                }
+                return;
+            }
+
+        }
     }
 }
