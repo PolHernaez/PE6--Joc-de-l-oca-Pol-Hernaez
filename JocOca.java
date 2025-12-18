@@ -159,16 +159,17 @@ public class JocOca {
 
                         daus3_6_4_5(tauler, torn, dau1, dau2);
                     }
-
+                    System.out.println("Es mou fins la casella " + tauler[torn]);
                     pont(tauler, torn);
-                    ocaEnOca(tauler, torn);
 
-                    System.out.println(noms[torn] + " es mou fins la casella: " + tauler[torn]);
+                    laberint(tauler, torn);
+
                     comprovarCasella63(tauler, torn);
-                    
-
+                    ocaEnOca(tauler, torn);
                     fonda(tauler, torn, rondesSanció);
                     pou(tauler, torn, rondesSanció);
+                    preso(tauler, torn, rondesSanció);
+                    laMort(tauler, torn);
                 }
                 System.out.println("");
             }
@@ -188,7 +189,7 @@ public class JocOca {
     }
 
     public void daus3_6_4_5(int tauler[], int torn, int d1, int d2) {
-        if (d2 == 3 && d1 == 6) {
+        if (d1 == 3 && d2 == 6) {
             tauler[torn] = 26;
             System.out.println("De dado a dado y tiro porque me ha tocado.");
             seguentTorn = false;
@@ -213,20 +214,16 @@ public class JocOca {
             seguentTorn = true;
             end = true;
         } else if (tauler[torn] > 63) {
-            int sobrants = 0;
-            while (tauler[torn] > 63) {
-                sobrants++;
-                tauler[torn]--;
+            tauler[torn] = 63 - (tauler[torn] - 63);
+            System.out.println(noms[torn] + " Rebota fins a " + tauler[torn] + "\n");
 
-            }
-            tauler[torn] = tauler[torn] - sobrants;
-            System.out.println(noms[torn] + " s'ha mogut fins a " + tauler[torn] + "\n");
         }
+
     }
 
     public void ocaEnOca(int tauler[], int torn) {
-        System.out.println("Es mou fins la casella " + tauler[torn]);
-        int[] oques = { 5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59 };
+
+        int[] oques = { 5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59, 63 };
 
         for (int i = 0; i < oques.length; i++) {
             if (tauler[torn] == oques[i]) {
@@ -245,13 +242,11 @@ public class JocOca {
     public void pont(int tauler[], int torn) {
         if (tauler[torn] == 6) {
             System.out.println("Casella 6: De puente a puente y tiro porque me lleva la corriente.");
-            System.out.println("Has abançat fins la casella 12");
 
             tauler[torn] = 12;
             seguentTorn = false;
         } else if (tauler[torn] == 12) {
             System.out.println("Casella 12: De puente a puente y tiro porque me lleva la corriente.");
-            System.out.println("Has retrocedit fins la casella 6");
 
             tauler[torn] = 6;
             seguentTorn = false;
@@ -270,16 +265,40 @@ public class JocOca {
     public void pou(int tauler[], int torn, int[] rondes) {
         if (tauler[torn] == 31) {
             System.out.println("Has caigut a al Pou! Perds el pròxim torn.\n");
-            for (int i = 0; i < tauler.length; i++){
-                if (sanció[i] && tauler[i]==31){
+            for (int i = 0; i < tauler.length; i++) {
+                if (sanció[i] && tauler[i] == 31) {
                     sanció[i] = false;
-                rondes[i] = 0;
-                System.out.println(noms[i] + " surt del pou.");
+                    rondes[i] = 0;
+                    System.out.println(noms[i] + " surt del pou.");
                 }
             }
             sanció[torn] = true;
             rondes[torn] = 2;
 
+        }
+    }
+
+    public void laberint(int tauler[], int torn) {
+        if (tauler[torn] == 42) {
+            System.out.println("Casella 42: Et perds en el laberint i tornes enrere fins la casella 39");
+            tauler[torn] = 39;
+
+        }
+    }
+
+    public void preso(int tauler[], int torn, int[] rondes) {
+        if (tauler[torn] == 52) {
+            System.out.println("Has entrat a la Presó! Perds 3 torns.\n");
+            sanció[torn] = true;
+            rondes[torn] = 3;
+        }
+    }
+
+    public void laMort(int tauler[], int torn) {
+        if (tauler[torn] == 58) {
+            System.out.println("Has MORT! Tornes a començar");
+            tauler[torn] = 1;
+            System.out.println("Estàs a la casella: " + tauler[torn]);
         }
     }
 }
