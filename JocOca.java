@@ -134,7 +134,7 @@ public class JocOca {
                 }
                 System.out.println("Torn de: " + noms[torn] + ", està a la casella " + tauler[torn]);
                 int dice = 0;
-                int dau1;
+                int dau1 =0;
                 int dau2 = 0;
 
                 if (sanció[torn]) {
@@ -144,6 +144,11 @@ public class JocOca {
                         sanció[torn] = false;
                     }
                 } else {
+                    System.out.println("Li toca tirar a: "+ noms[torn]+ " (escriu 'tirar' per tirar els daus)");
+                  boolean tirarcorrecte = true;
+                    do {
+                    String tirar = scTryCatchString(h);
+                    if (tirar.equalsIgnoreCase ("tirar")){
                     if (tauler[torn] < 60) {
                         dau1 = tirarDau(dice, tauler, torn);
                         dau2 = tirarDau(dice, tauler, torn);
@@ -151,7 +156,15 @@ public class JocOca {
                         dau1 = tirarDau(dice, tauler, torn);
                         dau2 = 0;
                     }
-
+                    tirarcorrecte =true;
+                }
+                else {
+                    System.out.println("Aquesta acció no fa res, escriu 'tirar'");
+                    
+                    tirarcorrecte = false;
+                }
+                   } while (!tirarcorrecte);
+                   
                     System.out.println(noms[torn] + " ha tret un " + dau1 + " i " + dau2 + ": " + (dau1 + dau2));
                     int move = dau1 + dau2;
                     tauler[torn] += move;
