@@ -17,15 +17,15 @@ public class JocOca {
 
     public void principal() {
         System.out.println("EL JOC DE L'OCA \n");
-        config();
-        play();
+        config(); //Inicia la configuració
+        play(); //Comença el joc
 
     }
 
     public void config() {
 
         do {
-            System.out.print("Quants jugadors juguen?: ");
+            System.out.print("Quants jugadors juguen?: "); //bucle per comprovar que sigui correcte
             numPlayers = scTryCatchInt(h);
             if (numPlayers < 2 || numPlayers > 4) {
                 System.out.println("Han de jugar de 2 a 4 persones");
@@ -57,7 +57,7 @@ public class JocOca {
     public String[] nomsJugadors(Scanner sc) {
         String[] names = new String[numPlayers];
 
-        for (int c = 0; c < numPlayers; c++) {
+        for (int c = 0; c < numPlayers; c++) { //Bucle per demanar els noms dels jugadors
             System.out.print("Com es diu el jugador " + (c + 1) + "?: ");
             names[c] = scTryCatchString(sc);
         }
@@ -94,7 +94,7 @@ public class JocOca {
             tirades[c] = (int) (Math.random() * 6) + 1;
             System.out.println("El jugador " + names[c] + " ha tret un " + tirades[c]);
         }
-        for (int i = 0; i < num - 1; i++) {
+        for (int i = 0; i < num - 1; i++) { //doble bucle per definir l'ordre
             for (int j = 0; j < num - 1 - i; j++) {
                 if (tirades[j] < tirades[j + 1]) {
                     int tempTirada = tirades[j];
@@ -120,11 +120,11 @@ public class JocOca {
         System.out.println("\nCOMENÇA LA PARTIDA");
         int torn = 5;
         int ronda = 0;
-        do {
+        do { //Fins que finalitzi la partida
 
             seguentTorn = false;
 
-            while (!seguentTorn) {
+            while (!seguentTorn) { //Bucle per gestionar el torn del jugador
                 seguentTorn = true;
 
                 if (torn >= noms.length) {
@@ -132,9 +132,9 @@ public class JocOca {
                     ronda++;
                     System.out.println("RONDA " + ronda + "\n");
                 }
-                System.out.println("Torn de: " + noms[torn] + ", està a la casella " + tauler[torn]);
+                System.out.println("Torn del jugador "+(torn+1)+": " + noms[torn] + ", està a la casella " + tauler[torn]);
                 int dice = 0;
-                int dau1 =0;
+                int dau1 = 0;
                 int dau2 = 0;
 
                 if (sanció[torn]) {
@@ -144,45 +144,44 @@ public class JocOca {
                         sanció[torn] = false;
                     }
                 } else {
-                    System.out.println("Li toca tirar a: "+ noms[torn]+ " (escriu 'tirar' per tirar els daus)");
-                  boolean tirarcorrecte = true;
+                    System.out.println("Li toca tirar a: " + noms[torn] + " (escriu 'tiro' per tirar els daus)");
+                    boolean tirarcorrecte = true;
                     do {
-                    String tirar = scTryCatchString(h);
-                    if (tirar.equalsIgnoreCase ("tirar")){
-                    if (tauler[torn] < 60) {
-                        dau1 = tirarDau(dice, tauler, torn);
-                        dau2 = tirarDau(dice, tauler, torn);
-                    } else {
-                        dau1 = tirarDau(dice, tauler, torn);
-                        dau2 = 0;
-                    }
-                    tirarcorrecte =true;
-                }
-                else {
-                    System.out.println("Aquesta acció no fa res, escriu 'tirar'");
-                    
-                    tirarcorrecte = false;
-                }
-                   } while (!tirarcorrecte);
-                   
+                        String tirar = scTryCatchString(h);
+                        if (tirar.equalsIgnoreCase("tiro")) {
+                            if (tauler[torn] < 60) {
+                                dau1 = tirarDau(dice, tauler, torn);
+                                dau2 = tirarDau(dice, tauler, torn);
+                            } else {
+                                dau1 = tirarDau(dice, tauler, torn);
+                                dau2 = 0;
+                            }
+                            tirarcorrecte = true;
+                        } else {
+                            System.out.println("Aquesta acció no fa res, escriu 'tirar'");
+
+                            tirarcorrecte = false;
+                        }
+                    } while (!tirarcorrecte);
+
                     System.out.println(noms[torn] + " ha tret un " + dau1 + " i " + dau2 + ": " + (dau1 + dau2));
                     int move = dau1 + dau2;
                     tauler[torn] += move;
-                    if (ronda == 1) {
+                    if (ronda == 1) {//per comprovar que es la 1a ronda
 
-                        daus3_6_4_5(tauler, torn, dau1, dau2);
+                        daus3_6_4_5(tauler, torn, dau1, dau2); //Comprovar daus 3 i 3 o 4 i 5
                     }
                     System.out.println("Es mou fins la casella " + tauler[torn]);
-                    pont(tauler, torn);
+                    pont(tauler, torn); //Comprova si cau al pont
 
-                    laberint(tauler, torn);
+                    laberint(tauler, torn); //Comprova si cau al laberint
 
-                    comprovarCasella63(tauler, torn);
-                    ocaEnOca(tauler, torn);
-                    fonda(tauler, torn, rondesSanció);
-                    pou(tauler, torn, rondesSanció);
-                    preso(tauler, torn, rondesSanció);
-                    laMort(tauler, torn);
+                    ocaEnOca(tauler, torn); //Comprova si cau a una oca
+                    fonda(tauler, torn, rondesSanció); //Comprova si cau a la fonda
+                    pou(tauler, torn, rondesSanció); //Comprova si cau al pou
+                    preso(tauler, torn, rondesSanció); //Comprova si cau a la presó
+                    laMort(tauler, torn); //Comprova si cau a la mort
+                    comprovarCasella63(tauler, torn); //Comprova si guanya o rebota
                 }
                 System.out.println("");
             }
@@ -242,13 +241,16 @@ public class JocOca {
             if (tauler[torn] == oques[i]) {
                 if (i + 1 < oques.length) {
                     tauler[torn] = oques[i + 1];
-                    System.out.println("De oca a oca! " + noms[torn] +
+                    System.out.println("De oca en oca y tiro porque me toca." + noms[torn] +
                             " avança fins la casella " + tauler[torn]);
                     seguentTorn = false;
                 }
                 return;
             }
 
+        }
+        if (tauler[torn] == 63) {
+            seguentTorn = true;
         }
     }
 
